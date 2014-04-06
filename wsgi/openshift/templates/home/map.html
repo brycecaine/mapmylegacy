@@ -1,0 +1,98 @@
+<html>
+    <head>
+        <title>hi</title>
+        <style>
+            html, body, #map_canvas { margin: 0; padding: 0; height: 100% }
+        </style>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+        <script type="text/javascript">
+            // from http://jsfiddle.net/yV6xv/4/
+            var map;
+            var mapOptions = {center: new google.maps.LatLng(0.0, 0.0),
+                              zoom: 2,
+                              mapTypeId: google.maps.MapTypeId.ROADMAP};
+            var markers = [];
+
+            function initialize() {
+                map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+                from1 = new google.maps.LatLng(0,0);
+                to1 = new google.maps.LatLng(30,12);
+                to2 = new google.maps.LatLng(20,18);
+                tos = [from1, to1, to2]
+                stories = ['born', 'mission', 'family life']
+
+                addMarker(tos,stories);
+            }
+
+            function addMarker(dests, stories) {
+                var marker = new google.maps.Marker({
+                    map: map,
+                    icon: 'https://integration.familysearch.org/sandbox/v2/TH-501-45268-17-68/thumb64.jpg?ctx=ArtCtxPublic&access_token=USYSBAF89C8ED70CFA496D3B9E02699A2970_idses-int02.a.fsglobal.net',
+                    origin: dests[0],
+                    position: dests[0],
+                    destination: dests[1],
+                    destinations: dests
+                });
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: stories[0],
+                    stories: stories
+                });
+
+                infowindow.open(map,marker);
+
+                google.maps.event.addListener(marker, 'click', function(event) {
+                    infowindow.close();
+                    fromLat = this.position.lat();
+                    fromLng = this.position.lng();
+                    toLat = this.destination.lat();
+                    toLng = this.destination.lng();
+
+                    // store a LatLng for each step of the animation
+                    frames = [];
+                    for (var percent = 0; percent < 1; percent += 0.01) {
+                        curLat = fromLat + percent * (toLat - fromLat);
+                        curLng = fromLng + percent * (toLng - fromLng);
+                        frames.push(new google.maps.LatLng(curLat, curLng));
+                    }
+
+                    move = function(marker, latlngs, index, wait, newDestination) {
+                        marker.setPosition(latlngs[index]);
+                        if(index != latlngs.length-1) {
+                            // call the next "frame" of the animation
+                            setTimeout(function() { 
+                                move(marker, latlngs, index+1, wait, newDestination); 
+                            }, wait);
+                        }
+                        else {
+                            // assign new route
+                            marker.position = marker.destination;
+                            var idx = marker.destinations.indexOf(marker.destination);
+                            if (idx + 1 == marker.destinations.length) {
+                                marker.destination = marker.origin
+                                // infowindow.content = infowindow.stories[0]
+                            } else {
+                                marker.destination = marker.destinations[idx + 1]
+                                // infowindow.content = infowindow.stories[idx]
+                            }
+                            infowindow.content = infowindow.stories[idx]
+                            infowindow.open(map,marker);
+                        }
+                    }
+
+                    // begin animation, send back to origin after completion
+                    move(marker, frames, 0, 7, marker.position);
+                });
+
+                markers.push(marker);
+            }
+
+            google.maps.event.addDomListener(window, 'load', initialize);
+        </script>
+
+    </head>
+    <body>
+        <div id="map_canvas"></div>
+    </body>
+</html>
