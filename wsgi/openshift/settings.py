@@ -98,12 +98,17 @@ else:
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    '/home/action/workspace/mapmylegacy/wsgi/openshift/static',
-)
+if 'OPENSHIFT_REPO_DIR' in os.environ:
+    STATICFILES_DIRS = (
+        # Put strings here, like "/home/html/static" or "C:/www/django/static".
+        # Always use forward slashes, even on Windows.
+        # Don't forget to use absolute paths, not relative paths.
+        '/var/lib/openshift/5340ed215004460f7b0005ad/app-root/repo/wsgi/openshift/static',
+    )
+else:
+    STATICFILES_DIRS = (
+        '/home/action/workspace/mapmylegacy/wsgi/openshift/static',
+    )
 
 # List of finder classes that know how to find static files in
 # various locations.
