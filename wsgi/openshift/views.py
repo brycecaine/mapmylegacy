@@ -41,10 +41,20 @@ def select_person(request):
     fs_access_token = r_auth.json()['access_token']
 
     # -------------------------------------------------------------------------
+    # Get current person id
+    fs_person_path = '/platform/users/current.json'
+    fs_person_url = '%s%s' % (FS_NETLOC, fs_person_path)
+    fs_auth_headers = {'Authorization': 'Bearer %s' % fs_access_token}
+    r_person = requests.get(fs_person_url, headers=fs_auth_headers)
+    r_person_json = r_person.text
+    r_person_dict = json.loads(r_person_json)
+    curr_person_id = r_person_dict['users'][0]['personId']
+
+    # -------------------------------------------------------------------------
     # Get ancestry data
     fs_ancestry_path = '/platform/tree/ancestry.json'
     fs_ancestry_url = '%s%s' % (FS_NETLOC, fs_ancestry_path)
-    fs_ancestry_params = {'person': 'KW71-SFK'}
+    fs_ancestry_params = {'person': curr_person_id}
     fs_ancestry_params_json = json.dumps(fs_ancestry_params)
     fs_auth_headers = {'Authorization': 'Bearer %s' % fs_access_token}
     # r_ancestry = requests.get(fs_ancestry_url, data=fs_ancestry_params_json, headers=fs_auth_headers)
