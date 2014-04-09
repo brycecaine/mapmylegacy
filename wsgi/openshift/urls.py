@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^select-person/?$', 'openshift.views.select_person', name='select_person'),
     url(r'^map/?$', 'openshift.views.map', name='map'),
     url(r'^timeline/?$', 'openshift.views.timeline', name='timeline'),
+    url(r'^logout/?$', 'openshift.views.logout', name='logout'),
     # url(r'^openshift/', include('openshift.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
