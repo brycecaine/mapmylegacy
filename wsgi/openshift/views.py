@@ -8,24 +8,12 @@ FS_AUTH_PATH = settings.FS_AUTH_PATH
 FS_AUTH_PARAMS = settings.FS_AUTH_PARAMS 
 
 def home(request):
-    curr_person_id = service.get_curr_person_id(request)
-    if curr_person_id:
-        next_url = '/select-person'
-        next_url_text = 'Select Ancestor'
-    else:
-        fs_auth_params = urllib.urlencode(FS_AUTH_PARAMS)
-        fs_auth_url = '%s%s?%s' % (FS_AUTH_NETLOC,
-                                   FS_AUTH_PATH,
-                                   fs_auth_params)
-        next_url = fs_auth_url
-        next_url_text = 'Sign in using FamilySearch'
 
     return render(request, 'home/home.html', locals())
 
 def select_person(request):
-    curr_person_id = service.get_curr_person_id(request)
-    r_ancestry_json = service.get_ancestry_data(request)
-
+    fs_access_token = service.get_access_token(request)
+    print fs_access_token
     return render(request, 'home/select-person.html', locals())
 
 def map(request):

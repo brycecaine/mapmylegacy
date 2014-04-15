@@ -31,3 +31,15 @@
     </div>
 {% endblock %}
 
+{% block script %}
+    <script type="text/javascript">
+        function authenticate() {
+            $('#authenticate').click(function() {
+                window.location = 'https://sandbox.familysearch.org/cis-web/oauth2/v3/authorization?redirect_uri=http://localhost:3000/select-person&response_type=code&client_id=WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
+            })
+        }
+        console.log('hi')
+        $(document).ready(authenticate)
+    </script>
+{% endblock %}
+

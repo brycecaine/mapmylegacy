@@ -11,7 +11,7 @@
                         <div class="col-lg-3 text-center">
                         </div>
                         <div class="col-lg-6 text-center">
-                            <a href="{{ next_url }}" class="btn btn-success btn-lg">{{ next_url_text }}</a>
+                            <button id="authenticate" class="btn btn-success btn-lg">Authenticate</button>
                             <br />
                             <br />
                             <br />
@@ -25,3 +25,6 @@
     </div>
 {% endblock %}
 
+{% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/fs.js"></script>
+{% endblock %}

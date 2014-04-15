@@ -27,9 +27,8 @@ def get_access_token(request):
     
     return fs_access_token
 
-def get_curr_person_id(request):
+def get_curr_person_id(fs_access_token):
     curr_person_id = None
-    fs_access_token = get_access_token(request)
     fs_person_path = '/platform/users/current.json'
     fs_person_url = '%s%s' % (FS_NETLOC, fs_person_path)
     fs_auth_headers = {'Authorization': 'Bearer %s' % fs_access_token}
