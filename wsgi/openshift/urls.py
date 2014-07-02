@@ -6,10 +6,13 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'openshift.views.home', name='home'),
+    # Change index to home when everything is ready
+    url(r'^$', 'openshift.views.index', name='home'),
     url(r'^select-person/?$', 'openshift.views.select_person', name='select_person'),
     url(r'^map/?$', 'openshift.views.map', name='map'),
     url(r'^timeline/?$', 'openshift.views.timeline', name='timeline'),
+    url(r'^test$', 'openshift.views.test', name='test'),
+    url(r'^test3$', 'openshift.views.test3', name='test3'),
     # url(r'^openshift/', include('openshift.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

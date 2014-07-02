@@ -1,0 +1,198 @@
+<!doctype html>
+<html>
+<head>
+  <title data-ng-bind="page.title+' &#8212; FamilySearch.org'">Sample App - FamilySearch Developer Center &#8212; FamilySearch.org</title>
+
+  
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="locale" content="en">
+<meta name="allLocales" content="en-US,en">
+
+<meta name="description" content="Discover your family history. Explore the world’s largest collection of free family trees, genealogy records and resources.">
+
+
+<meta name="keywords" content="Ancestor, Ancestry, Ancestral File, Archive, Baptism, Birth, Burial, Census, Census Record, Christening, Church, Church Record, Civil Registration, Court Record, Death, Descendant, Family, FamilySearch, Family History, Family Name, Family History Library, Family History Center, Family Tree, Genealogy, IGI, International Genealogical Index, LDS, Latter-Day Saint, Library, Marriage, Military Record, Mormon, Passenger List, Personal History, PAF, Personal Ancestral File, Probate Record, Record Custodian, Roots, Surname, The Church of Jesus Christ of Latter-day Saints, Vital Record">
+
+
+
+
+<!--[if IE 9]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<!--[if lt IE 9]><!--> <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> <!--<![endif]-->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  window.appName = 'developers';
+  window.targetEnv = 'prod';
+  window.debugOn = false;
+</script>
+
+  
+    <link href='https://edge.fscdn.org/assets/css/bootstrap-71f400d5102a488038fc9c4cc36d2728.css' rel='stylesheet' media='screen'>
+    <link href='https://edge.fscdn.org/assets/css/responsive-166fbb8fd4a3f5207a500bdf6c2d9186.css' rel='stylesheet' media='screen'>
+  
+
+  
+    <link href='https://edge.fscdn.org/assets/css/layout/theme-engage-536b90a7352c0a0141c9cd2e1f0a89ac.css' rel='stylesheet' media='screen'>
+    <link href='https://edge.fscdn.org/assets/css/prettify-c14b4df9ff7e4abed3baa78f6adb9c55.css' rel='stylesheet' media='screen'>
+    
+      
+        <link href='https://edge.fscdn.org/assets/css/dev-77770590d7e3a87abf344a507f4979dd.css' rel='stylesheet' media='screen'>
+      
+        <link href='https://edge.fscdn.org/assets/css/sample-app-bbe61e0e5553ac63e99a64a1602626d7.css' rel='stylesheet' media='screen'>
+      
+    
+  
+
+  <!--[if lte IE 8]>
+    <script src="https://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+    <script src='https://edge.fscdn.org/assets/js/html5shiv-printshiv-c42155be65838a3ecf77bfc6caf1ee7f.js'></script>
+  <![endif]-->
+
+  
+    <script src='https://edge.fscdn.org/assets/js/jquery-1.8.2.min-cfa9051cc0b05eb519f1e16b2a6645d7.js'></script>
+
+    <script src='https://edge.fscdn.org/assets/js/inject_0.4.0_a-7bb078127924826d44b15d3c0c4f097b.js'></script>
+
+    
+
+    <!--script src='https://edge.fscdn.org/assets/js/base-d73406673f381b7f1d51f01017f5cd7d.js'></script-->
+    <script src='{{ STATIC_URL }}js/fs_base.js'></script>
+    <script type="text/javascript">
+      window.baseUrl = 'https://familysearch.org/developers/';
+    </script>
+
+    
+  
+</head>
+
+<body id="pagekey__developers__sample_app" class="env-production">
+  <script src='https://edge.fscdn.org/assets/js/familysearch-s_code-19679656fa65786a5730ff00a58d5d84.js'></script>
+ 
+      <h3><a href="#authenticate" name="authenticate">Authenticate</a></h3>
+      <div>
+        <p class="sample_table">Access to the APIs requires authentication by passing an access token with each API request. Authenticate with <a href="https://familysearch.org/developers/docs/guides/authentication">OAuth 2</a> to obtain an access token.</p>
+        <div>
+          <div id="userdetails" class="alert alert-success">
+            <p>You have successfully authenticated as <a id="username" target="_blank"></a>.</p>
+            <p>Your access token is: <pre id="access-token"></pre></p>
+          </div>
+          <button id="authenticate-btn" class="btn btn-primary" disabled>Authenticate</button>
+          <button id="oauth-logout" class="btn">Logout</button>
+          <img id="oauth2_spinner" class="spinner" src="https://edge.fscdn.org/assets/img/ajax-loader-lite-ffffff-4b3afb84b2b71ef56df09997a350bd04.gif" />
+        </div>
+        
+      </div>
+
+  <script src='https://edge.fscdn.org/assets/js/clientManifest-002f6e9eb84f9f043253844844e49e78.js'></script>
+
+
+<script type="text/javascript">
+  
+    Inject.setModuleRoot("https://edge.fscdn.org/assets/js/modules");
+    
+    function loadCSS(path) {
+      return FS.File.loadCSS(path);
+    }
+    
+    
+      Inject.setCrossDomain({
+        relayFile: "https://edge.fscdn.org/assets/inject_relay_0.4.0a.20130130.html",
+        relaySwf: "https://edge.fscdn.org/assets/inject_relay_0.4.0a.20130130.swf"
+      });
+    
+    Inject.setExpires(2 * 24 * 60);//keep for max of 2 days in minutes
+
+  
+
+  
+  if(window.manifest) {
+    if(window.debugOn) {
+      console.log("Need to change manifest over to debug versions");
+      for(var k in manifest.js){
+        manifest.js[k] = manifest.js[k].replace(".js", "_raw.js");
+      }
+    }
+    Inject.manifest(manifest.js);
+  }
+  console.log("Controls have been configured");
+
+  $(document).ready(function() {
+    FS.Controls.init(document.body);
+  });
+</script>
+    <script src='https://edge.fscdn.org/assets/js/bootstrap-09c81293918e1c72e759b94586827d64.js'></script>
+    <script src='https://edge.fscdn.org/assets/js/prettify-min-d435ff18c832044c3ddf7a0cf826eb72.js'></script>
+    <script type="text/javascript">
+      $(function(){ prettyPrint(); });
+    </script>
+    
+    
+      
+        <!--script src='https://edge.fscdn.org/assets/js/SandboxAuth-118f268dda2c90286e62560beae2b1dd.js'></script-->
+        <script src='{{ STATIC_URL}}js/sandbox_auth.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/jquery.rest-6fdc0ba4a4c53daae26710260f10847c.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/sample-common-b8a673a9fb41eb4acaa9b110251239ca.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/sample-app-2aa4c99d292808f8b19c46207fb8f78e.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/authenticate-761e304b3d703b427c039845e76f7881.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/conclusions-a6eb514051407173548c9d62ce0fed15.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/couple-relationship-a5d0272748b70375e28465a3eb31441e.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/match-3ff3192e1bca8193d269b5bd895a0ff9.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/parent-child-create-60262fcb2d3018c53d549621f5f3cd4d.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/person-create-30db9c9c1ffb0627b7e8147bac4ec41c.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/person-discussions-75b1e074b938cb1cd0ab1a60914286d7.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/person-merge-39f397b5e7b0ef3626c3754d3ddf7c95.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/person-read-c7cae985184b2d445b5ca0e95e7aa845.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/search-068bde80ea924c1ef7885ef9a6ec864f.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/sources-6636158e0113509b13f39b62a0769909.js'></script>
+      
+        <script src='https://edge.fscdn.org/assets/js/sample-app/user-9de2728a202d7313e96ae33c84c13aa1.js'></script>
+      
+    
+
+    
+
+
+
+<script type="text/javascript"><!--
+s.pageName = "FamilySearch: Developers: sample-app";
+s.channel = "FamilySearch: Developers:";
+s.prop35 = s.eVar35 = "en-US"; 
+
+s.prop36 = ""; // Any search term
+var s_code=s.t();if(s_code) document.write(s_code)//--></script>
+
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-26436202-2']);
+  _gaq.push(['_setDomainName', '.familysearch.org']); 
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+  
+</body>
+</html>
+
