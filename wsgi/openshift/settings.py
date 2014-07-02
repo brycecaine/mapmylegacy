@@ -2,6 +2,25 @@
 # Django settings for OpenShift project.
 import imp, os
 
+HOME = os.environ['HOME']
+
+# ---------------------------------------------------------
+# FamilySearch-specific constants
+FS_CLIENT_ID = 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
+FS_AUTH_NETLOC = 'https://sandbox.familysearch.org'
+FS_AUTH_PATH = '/cis-web/oauth2/v3/authorization'
+FS_AUTH_PARAMS = \
+    {'redirect_uri': 'http://localhost:3000/select-person',
+     'response_type': 'code',
+     'client_id': FS_CLIENT_ID}
+
+FS_TOKEN_PATH = '/cis-web/oauth2/v3/token'
+FS_TOKEN_PARAMS = \
+    {'grant_type': 'authorization_code',
+     'client_id': FS_CLIENT_ID}
+FS_NETLOC = 'https://sandbox.familysearch.org'
+
+# ---------------------------------------------------------
 # a setting to determine whether we are running on OpenShift
 ON_OPENSHIFT = False
 if os.environ.has_key('OPENSHIFT_REPO_DIR'):
@@ -90,7 +109,7 @@ STATIC_URL = '/static/'
 if 'OPENSHIFT_REPO_DIR' in os.environ:
     STATIC_ROOT = os.path.join(os.environ.get('OPENSHIFT_REPO_DIR'), 'wsgi', 'static')
 else:
-    STATIC_ROOT = os.path.join('/home/action/workspace/mapmylegacy/wsgi', STATIC_URL.strip("/"))
+    STATIC_ROOT = os.path.join('%s/workspace/mapmylegacy/wsgi' % HOME, STATIC_URL.strip("/"))
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
@@ -107,7 +126,7 @@ if 'OPENSHIFT_REPO_DIR' in os.environ:
     )
 else:
     STATICFILES_DIRS = (
-        '/home/action/workspace/mapmylegacy/wsgi/openshift/static',
+        '%s/workspace/mapmylegacy/wsgi/openshift/static' % HOME,
     )
 
 # List of finder classes that know how to find static files in

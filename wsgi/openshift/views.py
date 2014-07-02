@@ -2,28 +2,15 @@ from django.shortcuts import render, redirect
 import json
 import os
 import requests
+import service
+import settings
 import urllib
 
-FS_CLIENT_ID = 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
-FS_AUTH_NETLOC = 'https://sandbox.familysearch.org'
-FS_AUTH_PATH = '/cis-web/oauth2/v3/authorization'
-FS_AUTH_PARAMS = \
-    {'redirect_uri': 'http://localhost:3000/select-person',
-     'response_type': 'code',
-     'client_id': FS_CLIENT_ID}
-
-FS_TOKEN_PATH = '/cis-web/oauth2/v3/token'
-FS_TOKEN_PARAMS = \
-    {'grant_type': 'authorization_code',
-     'client_id': FS_CLIENT_ID}
-
-FS_NETLOC = 'https://sandbox.familysearch.org'
+FS_AUTH_NETLOC = settings.FS_AUTH_NETLOC
+FS_AUTH_PATH = settings.FS_AUTH_PATH
+FS_AUTH_PARAMS = settings.FS_AUTH_PARAMS 
 
 def home(request):
-    fs_auth_params = urllib.urlencode(FS_AUTH_PARAMS)
-    fs_auth_url = '%s%s?%s' % (FS_AUTH_NETLOC,
-                               FS_AUTH_PATH,
-                               fs_auth_params)
 
     return render(request, 'home/home.html', locals())
 
@@ -71,6 +58,10 @@ def map(request):
 def timeline(request):
 
     return render(request, 'home/timeline.html', locals())
+
+def logout(request):
+    # Delete the access token
+    return render(request, 'home/home.html', locals())
 
 def custom_404(request):
     return render(request, 'home/404.html')
