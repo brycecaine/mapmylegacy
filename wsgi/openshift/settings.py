@@ -19,6 +19,7 @@ FS_TOKEN_PARAMS = \
     {'grant_type': 'authorization_code',
      'client_id': FS_CLIENT_ID}
 FS_NETLOC = 'https://sandbox.familysearch.org'
+FS_PERSON_PATH = '/platform/tree/persons/'
 
 # ---------------------------------------------------------
 # a setting to determine whether we are running on OpenShift
