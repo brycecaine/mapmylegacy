@@ -79,7 +79,8 @@ def select_person(request):
     response = render(request, 'home/select-person-simp.html', locals())
     fs_access_token = request.COOKIES.get('fs_access_token')
     print fs_access_token
-    if fs_access_token == 'None':
+    if fs_access_token == None:
+        print 'hi'
         auth_code = request.GET.get('code')
 
         token_response = requests.post('https://sandbox.familysearch.org/cis-web/oauth2/v3/token', {'grant_type': 'authorization_code', 'code': auth_code, 'client_id': 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'}).json()
