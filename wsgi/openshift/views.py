@@ -1,4 +1,6 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.template import RequestContext, loader
 import json
 import os
 import requests
@@ -60,8 +62,18 @@ def timeline(request):
     return render(request, 'home/timeline.html', locals())
 
 def logout(request):
-    # Delete the access token
-    return render(request, 'home/home.html', locals())
+    template = loader.get_template('home/home.html')
+    context = RequestContext(request, {})
+    response = HttpResponse(template.render(context))
+    fs_access_token = request.COOKIES.get('fs_access_token')
+
+    # Delete fs_access_token cookie
+    response.delete_cookie('fs_access_token')
+
+    # also delete access token https://familysearch.org/developers/docs/api/authentication/Delete_Access_Token_usecase
+    del_resp = requests.delete('https://sandbox.familysearch.org/cis-web/oauth2/v3/token?access_token=%s' % fs_access_token)
+    print del_resp
+    return response
 
 def custom_404(request):
     return render(request, 'home/404.html')
@@ -93,7 +105,5 @@ def select_person(request):
     person_response = requests.get('https://sandbox.familysearch.org/platform/tree/persons/KW71-481', headers={'Accept': 'application/x-gedcomx-v1+json', 'Authorization': 'Bearer ' + fs_access_token}).json()
     print person_response
 
-    # next steps: allow logout (by deleting cookie) and redirect
-    # also delete access token https://familysearch.org/developers/docs/api/authentication/Delete_Access_Token_usecase
     return response
 
