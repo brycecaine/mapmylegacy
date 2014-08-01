@@ -69,7 +69,7 @@ def select_person(request):
         # If response didn't contain access token, redirect to home page
         # otherwise add the access token to a cookie
         if not fs_access_token:
-            return redirect('/test3')
+            return redirect('/')
 
         else:
             response.set_cookie('fs_access_token', fs_access_token, max_age=3540)
