@@ -46,7 +46,7 @@ def test3(request):
     return render(request, 'home/test3.html', locals())
 
 def select_person(request):
-    response = render(request, 'home/select-person-simp.html', locals())
+    response = render(request, 'home/select-person.html', locals())
 
     # Get access token if it exists in client cookies
     fs_access_token = request.COOKIES.get('fs_access_token')

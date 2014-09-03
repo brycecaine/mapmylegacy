@@ -10,7 +10,7 @@ FS_CLIENT_ID = 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'
 FS_AUTH_NETLOC = 'https://sandbox.familysearch.org'
 FS_AUTH_PATH = '/cis-web/oauth2/v3/authorization'
 FS_AUTH_PARAMS = \
-    {'redirect_uri': 'http://localhost:3000/select-person',
+    {'redirect_uri': 'http://scoutcharter-21273.usw1.actionbox.io:3000/select-person',
      'response_type': 'code',
      'client_id': FS_CLIENT_ID}
 
