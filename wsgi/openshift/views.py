@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import RequestContext, loader
+from forms import PersonSearchForm
 import json
 import os
 import requests
@@ -20,6 +21,13 @@ def home(request):
     return render(request, 'home/home.html', locals())
 
 def map(request):
+    # Get the person data
+    person_id = 'KW71-481'
+    get_person_url = '%s%s%s' % (FS_AUTH_NETLOC, FS_PERSON_PATH, person_id)
+    get_person_headers = {'Accept': 'application/x-gedcomx-v1+json',
+                          'Authorization': 'Bearer ' + fs_access_token}
+    person_response = requests.get(get_person_url, headers=get_person_headers).json()
+    print person_response
 
     return render(request, 'home/map.html', locals())
 
@@ -46,6 +54,7 @@ def test3(request):
     return render(request, 'home/test3.html', locals())
 
 def select_person(request):
+    form = PersonSearchForm()
     response = render(request, 'home/select-person.html', locals())
 
     # Get access token if it exists in client cookies
@@ -73,16 +82,8 @@ def select_person(request):
 
         else:
             response.set_cookie('fs_access_token', fs_access_token, max_age=3540)
-
-    print fs_access_token
-
-    # Get the person data
-    person_id = 'KW71-481'
-    get_person_url = '%s%s%s' % (FS_AUTH_NETLOC, FS_PERSON_PATH, person_id)
-    get_person_headers = {'Accept': 'application/x-gedcomx-v1+json',
-                          'Authorization': 'Bearer ' + fs_access_token}
-    person_response = requests.get(get_person_url, headers=get_person_headers).json()
-    print person_response
+            print fs_access_token
+            print form
 
     return response
 
