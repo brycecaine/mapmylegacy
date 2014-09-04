@@ -39,15 +39,18 @@ def logout(request):
     template = loader.get_template('home/home.html')
     context = RequestContext(request, {})
     response = HttpResponse(template.render(context))
-    fs_access_token = request.COOKIES.get('fs_access_token')
-
-    # Delete fs_access_token cookie
-    response.delete_cookie('fs_access_token')
+    fs_access_token = request.session.get('fs_access_token')
+    print 'del'
+    print fs_access_token
 
     # Delete access token
     del_acc_tok_url = '%s%s?access_token=%s' % (FS_AUTH_NETLOC, FS_TOKEN_PATH, fs_access_token)
     del_resp = requests.delete(del_acc_tok_url)
     print del_resp
+
+    # Delete fs_access_token session variable
+    del fs_access_token
+
     return response
 
 def test3(request):
@@ -57,8 +60,9 @@ def select_person(request):
     form = PersonSearchForm()
     response = render(request, 'home/select-person.html', locals())
 
-    # Get access token if it exists in client cookies
-    fs_access_token = request.COOKIES.get('fs_access_token')
+    # Get access token if it exists in the session variables
+    fs_access_token = request.session.get('fs_access_token')
+    print 'ins'
     print fs_access_token
 
     # If the access token doesn't exist, have user authenticate against familysearch for it
@@ -76,12 +80,13 @@ def select_person(request):
         fs_access_token = token_response.get('access_token')
 
         # If response didn't contain access token, redirect to home page
-        # otherwise add the access token to a cookie
+        # otherwise add the access token to a session variable
         if not fs_access_token:
             return redirect('/')
 
         else:
-            response.set_cookie('fs_access_token', fs_access_token, max_age=3540)
+            request.session.set_expiry(1800)
+            request.session['fs_access_token'] = fs_access_token
             print fs_access_token
             print form
 
