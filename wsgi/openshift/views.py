@@ -27,7 +27,6 @@ def map(request):
     get_person_headers = {'Accept': 'application/x-gedcomx-v1+json',
                           'Authorization': 'Bearer ' + fs_access_token}
     person_response = requests.get(get_person_url, headers=get_person_headers).json()
-    print person_response
 
     return render(request, 'home/map.html', locals())
 
@@ -36,34 +35,20 @@ def timeline(request):
     return render(request, 'home/timeline.html', locals())
 
 def logout(request):
-    template = loader.get_template('home/home.html')
-    context = RequestContext(request, {})
-    response = HttpResponse(template.render(context))
-    fs_access_token = request.session.get('fs_access_token')
-    print 'del'
-    print fs_access_token
 
-    # Delete access token
-    del_acc_tok_url = '%s%s?access_token=%s' % (FS_AUTH_NETLOC, FS_TOKEN_PATH, fs_access_token)
-    del_resp = requests.delete(del_acc_tok_url)
-    print del_resp
+    service.del_access_token(request)
 
-    # Delete fs_access_token session variable
-    del fs_access_token
-
-    return response
-
-def test3(request):
-    return render(request, 'home/test3.html', locals())
+    return render(request, 'home/home.html', locals())
 
 def select_person(request):
     fs_access_token = service.get_access_token(request)
-    print 'fs from service!'
-    print fs_access_token
+    curr_person_id = service.get_curr_person_data(fs_access_token, 'id')
+    ancestry_json = service.get_ancestry_data(fs_access_token, curr_person_id)
+    ancestry_data = json.loads(ancestry_json)
+    print ancestry_data
     form = PersonSearchForm()
-    response = render(request, 'home/select-person.html', locals())
 
-    return response
+    return render(request, 'home/select-person.html', locals())
 
 def custom_404(request):
 

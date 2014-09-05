@@ -14,12 +14,9 @@ FS_NETLOC = settings.FS_NETLOC
 def get_access_token(request):
     # Get access token if it exists in the session variables
     fs_access_token = request.session.get('fs_access_token')
-    print 'ins'
-    print fs_access_token
 
     # If the access token doesn't exist, have user authenticate against familysearch for it
     if fs_access_token == None:
-        print 'hi'
         # Get authorization code from url
         auth_code = request.GET.get('code')
 
@@ -37,13 +34,30 @@ def get_access_token(request):
             return redirect('/')
 
         else:
-            request.session.set_expiry(1)
+            request.session.set_expiry(1800)
             request.session['fs_access_token'] = fs_access_token
-            print fs_access_token
+
+            fs_name = get_curr_person_data(fs_access_token, 'name')
+            request.session['fs_name'] = fs_name
 
     return fs_access_token
 
-def get_curr_person_id(fs_access_token):
+def del_access_token(request):
+    status = False
+    fs_access_token = request.session.get('fs_access_token')
+
+    # Delete access token
+    del_acc_tok_url = '%s%s?access_token=%s' % (FS_AUTH_NETLOC, FS_TOKEN_PATH, fs_access_token)
+    del_resp = requests.delete(del_acc_tok_url)
+
+    # Delete fs_access_token session variable
+    request.session.flush()
+
+    status = True
+
+    return status
+
+def get_curr_person_data(fs_access_token, kind='all'):
     curr_person_id = None
     fs_person_path = '/platform/users/current.json'
     fs_person_url = '%s%s' % (FS_NETLOC, fs_person_path)
@@ -51,20 +65,30 @@ def get_curr_person_id(fs_access_token):
     r_person = requests.get(fs_person_url, headers=fs_auth_headers)
     r_person_json = r_person.text
     r_person_dict = json.loads(r_person_json)
-    curr_person_id = r_person_dict['users'][0]['personId']
 
-    return curr_person_id 
+    if kind == 'id':
+        curr_person_id = r_person_dict['users'][0]['personId']
+        print 'rrrrrrrrrrrrrrrrrrrrrrrr'
+        print r_person_dict
 
-def get_ancestry_data(request):
-    curr_person_id = get_curr_person_id(request)
-    fs_access_token = get_access_token(request)
+        return curr_person_id 
+
+    elif kind == 'name':
+        curr_person_id = r_person_dict['users'][0]['displayName']
+
+        return curr_person_id 
+
+    else:
+        return r_person_dict    
+
+def get_ancestry_data(fs_access_token, person_id):
     fs_ancestry_path = '/platform/tree/ancestry.json'
     fs_ancestry_url = '%s%s' % (FS_NETLOC, fs_ancestry_path)
-    fs_ancestry_params = {'person': curr_person_id}
+    fs_ancestry_params = {'person': person_id}
     fs_ancestry_params_json = json.dumps(fs_ancestry_params)
     fs_auth_headers = {'Authorization': 'Bearer %s' % fs_access_token}
     # r_ancestry = requests.get(fs_ancestry_url, data=fs_ancestry_params_json, headers=fs_auth_headers)
     r_ancestry = requests.get('https://sandbox.familysearch.org/platform/tree/ancestry.json', params=fs_ancestry_params, headers=fs_auth_headers)
-    r_ancestry_json = r_ancestry.text
+    ancestry_json = r_ancestry.text
 
-    return r_ancestry_json 
+    return ancestry_json 

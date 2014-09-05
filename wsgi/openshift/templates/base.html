@@ -34,11 +34,12 @@
                         <li class="divider-vertical"></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                    {% if request.COOKIES.fs_access_token %}
-                        <li><a href="/" class="navbar-link">{{ curr_person_id }}</a></li>
-                        <li><a href="/logout" class="navbar-link">Log out</a></li>
+                    {% if request.session.fs_access_token %}
+                        <li>
+                            <a href="/logout">{{ request.session.fs_name|title }} - log out</a>
+                        </li>
                     {% else %}
-                        <li><a href="https://sandbox.familysearch.org/cis-web/oauth2/v3/authorization?response_type=code&client_id=WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK&redirect_uri=http://localhost:3000/select-person" class="navbar-link">Log in</a></li>
+                        <li><a href="https://sandbox.familysearch.org/cis-web/oauth2/v3/authorization?response_type=code&client_id=WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK&redirect_uri=http://scoutcharter-21273.usw1.actionbox.io:3000/select-person" class="navbar-link">Log in</a></li>
                     {% endif %}
                     </ul>
                 </div>
