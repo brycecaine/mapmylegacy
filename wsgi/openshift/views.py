@@ -14,7 +14,6 @@ FS_AUTH_NETLOC = settings.FS_AUTH_NETLOC
 FS_AUTH_PATH = settings.FS_AUTH_PATH
 FS_TOKEN_PATH = settings.FS_TOKEN_PATH
 FS_AUTH_PARAMS = settings.FS_AUTH_PARAMS 
-FS_PERSON_PATH = settings.FS_PERSON_PATH 
 
 def home(request):
 
@@ -22,13 +21,19 @@ def home(request):
 
 def map(request):
     # Get the person data
-    person_id = 'KW71-481'
-    get_person_url = '%s%s%s' % (FS_AUTH_NETLOC, FS_PERSON_PATH, person_id)
-    get_person_headers = {'Accept': 'application/x-gedcomx-v1+json',
-                          'Authorization': 'Bearer ' + fs_access_token}
-    person_response = requests.get(get_person_url, headers=get_person_headers).json()
+    person_data = None
+    form = PersonSearchForm(request.GET)
+    print form
+    if form.is_valid():
+        # person_id = 'KWWD-HYG'
+        person_id = form.cleaned_data.get('search_field')
+        print person_id
+        fs_access_token = service.get_access_token(request)
+        person_data = service.get_person_data(fs_access_token, person_id)
 
-    return render(request, 'home/map.html', locals())
+        print person_data
+
+        return render(request, 'home/map.html', locals())
 
 def timeline(request):
 

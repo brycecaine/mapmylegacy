@@ -10,6 +10,7 @@ FS_TOKEN_PATH = settings.FS_TOKEN_PATH
 FS_TOKEN_PARAMS = settings.FS_TOKEN_PARAMS 
 
 FS_NETLOC = settings.FS_NETLOC
+FS_PERSON_PATH = settings.FS_PERSON_PATH 
 
 def get_access_token(request):
     # Get access token if it exists in the session variables
@@ -66,20 +67,23 @@ def get_curr_person_data(fs_access_token, kind='all'):
     r_person_json = r_person.text
     r_person_dict = json.loads(r_person_json)
 
-    if kind == 'id':
-        curr_person_id = r_person_dict['users'][0]['personId']
-        print 'rrrrrrrrrrrrrrrrrrrrrrrr'
-        print r_person_dict
+    return_val = r_person_dict
 
-        return curr_person_id 
+    if kind == 'id':
+        return_val = r_person_dict['users'][0]['personId']
 
     elif kind == 'name':
-        curr_person_id = r_person_dict['users'][0]['displayName']
+        return_val = r_person_dict['users'][0]['displayName']
 
-        return curr_person_id 
+    return return_val    
 
-    else:
-        return r_person_dict    
+def get_person_data(fs_access_token, person_id):
+    get_person_url = '%s%s%s' % (FS_AUTH_NETLOC, FS_PERSON_PATH, person_id)
+    get_person_headers = {'Accept': 'application/x-gedcomx-v1+json',
+                          'Authorization': 'Bearer ' + fs_access_token}
+    person_response = requests.get(get_person_url, headers=get_person_headers).json()
+
+    return person_response 
 
 def get_ancestry_data(fs_access_token, person_id):
     fs_ancestry_path = '/platform/tree/ancestry.json'
