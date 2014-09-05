@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 import json
 import requests
 import settings
@@ -11,20 +12,35 @@ FS_TOKEN_PARAMS = settings.FS_TOKEN_PARAMS
 FS_NETLOC = settings.FS_NETLOC
 
 def get_access_token(request):
-    if request.session.get('fs_access_token'):
-        fs_access_token = request.session.get('fs_access_token')
+    # Get access token if it exists in the session variables
+    fs_access_token = request.session.get('fs_access_token')
+    print 'ins'
+    print fs_access_token
 
-    else:
-        fs_token_url = '%s%s' % (FS_AUTH_NETLOC, FS_TOKEN_PATH)
-        fs_auth_code = request.GET.get('code')
-        fs_token_params = FS_TOKEN_PARAMS
-        fs_token_params['code'] = fs_auth_code
-        fs_token_headers = {'content-type': 'application/json'}
-        
-        r_auth = requests.post(fs_token_url, data=fs_token_params)
-        fs_access_token = r_auth.json()['access_token']
-        request.session['fs_access_token'] = fs_access_token
-    
+    # If the access token doesn't exist, have user authenticate against familysearch for it
+    if fs_access_token == None:
+        print 'hi'
+        # Get authorization code from url
+        auth_code = request.GET.get('code')
+
+        # Get access token
+        get_acc_tok_url = '%s%s' % (FS_AUTH_NETLOC, FS_TOKEN_PATH)
+        get_acc_tok_data = {'grant_type': 'authorization_code',
+                            'code': auth_code,
+                            'client_id': FS_CLIENT_ID}
+        token_response = requests.post(get_acc_tok_url, get_acc_tok_data).json()
+        fs_access_token = token_response.get('access_token')
+
+        # If response didn't contain access token, redirect to home page
+        # otherwise add the access token to a session variable
+        if not fs_access_token:
+            return redirect('/')
+
+        else:
+            request.session.set_expiry(1)
+            request.session['fs_access_token'] = fs_access_token
+            print fs_access_token
+
     return fs_access_token
 
 def get_curr_person_id(fs_access_token):
