@@ -49,8 +49,14 @@ def select_person(request):
     fs_access_token = service.get_access_token(request)
     curr_person_id = service.get_curr_person_data(fs_access_token, 'id')
     ancestry_json = service.get_ancestry_data(fs_access_token, curr_person_id)
-    ancestry_data = json.loads(ancestry_json)
-    print ancestry_data
+
+    try:
+        ancestry_data = json.loads(ancestry_json)
+        print ancestry_data
+
+    except ValueError:
+        pass
+
     form = PersonSearchForm()
 
     return render(request, 'home/select-person.html', locals())

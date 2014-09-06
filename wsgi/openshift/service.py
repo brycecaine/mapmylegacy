@@ -65,15 +65,20 @@ def get_curr_person_data(fs_access_token, kind='all'):
     fs_auth_headers = {'Authorization': 'Bearer %s' % fs_access_token}
     r_person = requests.get(fs_person_url, headers=fs_auth_headers)
     r_person_json = r_person.text
-    r_person_dict = json.loads(r_person_json)
 
-    return_val = r_person_dict
+    try:
+        r_person_dict = json.loads(r_person_json)
 
-    if kind == 'id':
-        return_val = r_person_dict['users'][0]['personId']
+        return_val = r_person_dict
 
-    elif kind == 'name':
-        return_val = r_person_dict['users'][0]['displayName']
+        if kind == 'id':
+            return_val = r_person_dict['users'][0]['personId']
+
+        elif kind == 'name':
+            return_val = r_person_dict['users'][0]['displayName']
+
+    except ValueError:
+        return_val = None
 
     return return_val    
 
