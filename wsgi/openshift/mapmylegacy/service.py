@@ -1,7 +1,6 @@
-from django.shortcuts import redirect
+from openshift import settings
 import json
 import requests
-import settings
 
 FS_CLIENT_ID = settings.FS_CLIENT_ID
 FS_AUTH_NETLOC = settings.FS_AUTH_NETLOC
@@ -29,12 +28,9 @@ def get_access_token(request):
         token_response = requests.post(get_acc_tok_url, get_acc_tok_data).json()
         fs_access_token = token_response.get('access_token')
 
-        # If response didn't contain access token, redirect to home page
-        # otherwise add the access token to a session variable
-        if not fs_access_token:
-            return redirect('/')
-
-        else:
+        # If response contains access token, add the access token to a session
+        # variable
+        if fs_access_token:
             request.session.set_expiry(1800)
             request.session['fs_access_token'] = fs_access_token
 
@@ -83,12 +79,22 @@ def get_curr_person_data(fs_access_token, kind='all'):
     return return_val    
 
 def get_person_data(fs_access_token, person_id):
-    get_person_url = '%s%s%s' % (FS_AUTH_NETLOC, FS_PERSON_PATH, person_id)
+    # get_person_url = '%s%s%s' % (FS_AUTH_NETLOC, FS_PERSON_PATH, person_id)
+    get_person_url = '%s%s%s/notes' % (FS_AUTH_NETLOC, FS_PERSON_PATH, person_id)
     get_person_headers = {'Accept': 'application/x-gedcomx-v1+json',
                           'Authorization': 'Bearer ' + fs_access_token}
-    person_response = requests.get(get_person_url, headers=get_person_headers).json()
+    person_response = requests.get(get_person_url, headers=get_person_headers).text
+    person_data = json.loads(person_response)
 
-    return person_response 
+    # Still need to pick the correct note among several notes
+    person_data = person_data['persons'][0]['notes'][0]['text']
+    event_list = person_data.split('\n')
+    for event in event_list:
+        items = event.split(' - ')
+    print '========================'
+    print json.dumps(person_data, indent=4)
+
+    return person_data
 
 def get_ancestry_data(fs_access_token, person_id):
     fs_ancestry_path = '/platform/tree/ancestry.json'

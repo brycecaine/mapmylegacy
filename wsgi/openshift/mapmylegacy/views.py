@@ -1,12 +1,12 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import RequestContext, loader
 from forms import PersonSearchForm
+from openshift import settings
 import json
 import os
 import requests
 import service
-import settings
 import urllib
 
 FS_CLIENT_ID = settings.FS_CLIENT_ID
@@ -27,13 +27,19 @@ def map(request):
     if form.is_valid():
         # person_id = 'KWWD-HYG'
         person_id = form.cleaned_data.get('search_field')
+
         print person_id
+
         fs_access_token = service.get_access_token(request)
+        if not fs_access_token:
+            return redirect('/')
+
         person_data = service.get_person_data(fs_access_token, person_id)
 
-        print person_data
-
         return render(request, 'home/map.html', locals())
+
+    else:
+        return redirect('/select-person')
 
 def timeline(request):
 
@@ -47,6 +53,10 @@ def logout(request):
 
 def select_person(request):
     fs_access_token = service.get_access_token(request)
+
+    if not fs_access_token:
+        return redirect('/')
+
     curr_person_id = service.get_curr_person_data(fs_access_token, 'id')
     ancestry_json = service.get_ancestry_data(fs_access_token, curr_person_id)
 
