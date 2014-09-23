@@ -213,3 +213,7 @@ LOGGING = {
 
 # http://goo.gl/CAL5Ll
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+ALLOWED_HOSTS = [
+    '.rhcloud.com',
+]
