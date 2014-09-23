@@ -21,6 +21,8 @@ FS_TOKEN_PARAMS = \
 FS_NETLOC = 'https://sandbox.familysearch.org'
 FS_PERSON_PATH = '/platform/tree/persons/'
 
+SENTRY_HASH = os.environ['SENTRY_HASH']
+SENTRY_FIVE_DIGIT = os.environ['SENTRY_FIVE_DIGIT']
 # ---------------------------------------------------------
 # a setting to determine whether we are running on OpenShift
 ON_OPENSHIFT = False
@@ -186,6 +188,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'raven.contrib.django.raven_compat',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -217,3 +220,5 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ALLOWED_HOSTS = [
     '.rhcloud.com',
 ]
+
+RAVEN_CONFIG = { 'dsn': 'https://%s@app.getsentry.com/%s' % (SENTRY_HASH, SENTRY_FIVE_DIGIT), }
