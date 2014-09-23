@@ -21,8 +21,8 @@ FS_TOKEN_PARAMS = \
 FS_NETLOC = 'https://sandbox.familysearch.org'
 FS_PERSON_PATH = '/platform/tree/persons/'
 
-SENTRY_HASH = os.environ['SENTRY_HASH']
-SENTRY_FIVE_DIGIT = os.environ['SENTRY_FIVE_DIGIT']
+SENTRY_HASH = '5e91107364f6410e8bb190dc711fd987:10e23ff5a4164920a9b280c23cb7b143'
+SENTRY_FIVE_DIGIT = '30504'
 # ---------------------------------------------------------
 # a setting to determine whether we are running on OpenShift
 ON_OPENSHIFT = False
