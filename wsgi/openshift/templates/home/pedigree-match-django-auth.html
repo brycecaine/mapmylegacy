@@ -1,0 +1,133 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+	<title>Phaser - Making your first game, part 1</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.1.2/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body>
+
+<button id="authenticate-btn" class="btn btn-primary">Authenticate</button>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create,render:render}, true);
+
+var destinations = {'P' : {'x': 360, 'y': 470},
+                    'F' : {'x': 150, 'y': 340},
+                    'M' : {'x': 570, 'y': 340},
+                    'FF': {'x':  40, 'y': 210},
+                    'FM': {'x': 260, 'y': 210},
+                    'MF': {'x': 460, 'y': 210},
+                    'MM': {'x': 680, 'y': 210}};
+
+var pics = [{'filename': 'a.png', 'destination': destinations['P'] , 'name': 'Rulon Mareton'},
+            {'filename': 'b.png', 'destination': destinations['F'] , 'name': 'Talon Mareton'},
+            {'filename': 'c.png', 'destination': destinations['M'] , 'name': 'Hattie Bridges'},
+            {'filename': 'd.png', 'destination': destinations['FF'], 'name': 'Paren Mareton'},
+            {'filename': 'e.png', 'destination': destinations['FM'], 'name': 'Gertrude Polimon'},
+            {'filename': 'f.png', 'destination': destinations['MF'], 'name': 'Aleck Bridges'},
+            {'filename': 'g.png', 'destination': destinations['MM'], 'name': 'Raquel Kripps'}];
+
+var score = 0;
+var scoreText;
+
+function preload() {
+    game.load.image('pedigree', 'static/img/pedigree_template.png');
+    for (var i in pics) {
+        var filename = pics[i].filename
+        var key = filename.replace('.png', '');
+        game.load.image(key, 'static/img/' + filename);
+    }
+}
+
+function create() {
+    game.add.sprite(0, 0, 'pedigree');
+    var pic_item;
+    shuffle(pics);
+    for (var i in pics) {
+        var key = pics[i].filename.replace('.png', '');
+        orig_x = 17 + 114 * i;
+        orig_y = 60;
+        pic_item = game.add.sprite(orig_x, orig_y, key);
+        pic_item.inputEnabled = true;
+        pic_item.input.enableDrag();
+        pic_item.events.onDragStop.add(fixLocation);
+
+        pic_item.id = key;
+        pic_item.orig_x = orig_x;
+        pic_item.orig_y = orig_y;
+        pic_item.destination = pics[i].destination;
+    }
+
+    scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+}
+
+function render() {
+    var style = {font: '18px Arial', fill: '#aaa', align: 'center'};
+
+    for (var i in pics) {
+        var x_coord = pics[i].destination.x + 10;
+        var y_coord = pics[i].destination.y + 85;
+        var name = pics[i].name;
+        var t = game.add.text(x_coord, y_coord, name, style);
+        t.wordWrap = true;
+        t.wordWrapWidth = 10;
+    }
+
+}
+
+function fixLocation(item) {
+    // Move the items when it is already dropped.
+    if (item.x >= item.destination.x - 80 &&
+        item.x <= item.destination.x + 80 &&
+        item.y >= item.destination.y - 80 &&
+        item.y <= item.destination.y + 80) {
+        console.log('yay');
+        console.log(item.id);
+        item.x = item.destination.x;
+        item.y = item.destination.y;
+        score += 1;
+    } else {
+        item.x = item.orig_x;
+        item.y = item.orig_y;
+    }
+
+    if (score >= 7) {
+        scoreText.text = 'Score: ' + score + ' - Way to go, you did it!';
+    } else {
+        scoreText.text = 'Score: ' + score;
+    }
+}
+
+// From http://goo.gl/9gjZ2F
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex ;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+</script>
+
+</body>
+</html>
+

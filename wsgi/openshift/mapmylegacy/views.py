@@ -45,6 +45,14 @@ def timeline(request):
 
     return render(request, 'home/timeline.html', locals())
 
+def pedigree_match(request):
+
+    return render(request, 'home/pedigree-match.html', locals())
+
+def sample_app(request):
+
+    return render(request, 'home/sample-app.html', locals())
+
 def logout(request):
 
     service.del_access_token(request)

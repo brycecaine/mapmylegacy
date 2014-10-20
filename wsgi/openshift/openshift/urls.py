@@ -9,9 +9,10 @@ urlpatterns = patterns('',
     # Examples:
     # Change index to home when everything is ready
     url(r'^$', views.home, name='home'),
-    url(r'^select-person/?$', views.select_person, name='select_person'),
+    # url(r'^select-person/?$', views.select_person, name='select_person'),
     url(r'^map/?$', views.map, name='map'),
     url(r'^timeline/?$', views.timeline, name='timeline'),
+    url(r'^select-person/?$', views.pedigree_match, name='pedigree_match'),
     url(r'^logout/?$', views.logout, name='logout'),
     # url(r'^openshift/', include('openshift.foo.urls')),
 
