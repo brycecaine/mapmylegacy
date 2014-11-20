@@ -1,250 +1,134 @@
 <!doctype html> 
 <html lang="en"> 
-<head> 
-	<meta charset="UTF-8" />
-	<title>Phaser - Making your first game, part 1</title>
-    <style type="text/css">
-        body {
-            margin: 0;
-        }
-    </style>
-<script src='https://edge.fscdn.org/assets/js/jquery-1.8.2.min-cfa9051cc0b05eb519f1e16b2a6645d7.js'></script>
-<script src='https://edge.fscdn.org/assets/js/inject_0.4.0_a-7bb078127924826d44b15d3c0c4f097b.js'></script>
-<script src='https://edge.fscdn.org/assets/js/base-d73406673f381b7f1d51f01017f5cd7d.js'></script>
-<script type="text/javascript">
-    window.baseUrl = 'https://familysearch.org/developers/';
-</script>
+    <head> 
+        <meta charset="UTF-8" />
+        <title>Phaser - Making your first game, part 1</title>
+    </head>
+    <body>
+        <button id="authenticate-btn" class="btn btn-primary">Authenticate</button>
+        <a href="javascript:personReadId('KWQ7-Y57');">KWQ7-Y57</a>
 
-</head>
-<body>
-<script src='https://edge.fscdn.org/assets/js/familysearch-s_code-19679656fa65786a5730ff00a58d5d84.js'></script>
+        <script src='https://edge.fscdn.org/assets/js/jquery-1.8.2.min-cfa9051cc0b05eb519f1e16b2a6645d7.js'></script>
+        <script src='https://edge.fscdn.org/assets/js/familysearch-s_code-19679656fa65786a5730ff00a58d5d84.js'></script>
+        <script type="text/javascript">
+            (function() {
+                function getParameterByName(name) {
+                    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                        results = regex.exec(location.search);
+                    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+                }
 
-<button id="authenticate-btn" class="btn btn-primary">Authenticate</button>
-<a href="javascript:personReadId('KWQ7-Y57');">KWQ7-Y57</a>
+                function setCookie(cname, cvalue, exseconds) {
+                    var d = new Date();
+                    d.setTime(d.getTime() + (exseconds*1000));
+                    var expires = "expires="+d.toUTCString();
+                    document.cookie = cname + "=" + cvalue + "; " + expires;
+                }
 
-<script type="text/javascript">
-</script>
+                function getCookie(cname) {
+                    var name = cname + "=";
+                    var ca = document.cookie.split(';');
+                    for(var i=0; i<ca.length; i++) {
+                        var c = ca[i];
+                        while (c.charAt(0)==' ') c = c.substring(1);
+                        if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+                    }
+                    return "";
+                }
 
-  <script src='https://edge.fscdn.org/assets/js/clientManifest-b57ee5134b91deb3a7cf4119e2afb4f9.js'></script>
+                function deleteCookie(cname) {
+                    var d = new Date();
+                    d.setTime(d.getTime() - 1000);
+                    var expires = "expires="+d.toUTCString();
+                    document.cookie = cname + "=; " + expires;
+                }
 
-
-<script type="text/javascript">
-  
-    Inject.setModuleRoot("https://edge.fscdn.org/assets/js/modules");
-    
-    function loadCSS(path) {
-      return FS.File.loadCSS(path);
-    }
-    
-    
-      Inject.setCrossDomain({
-        relayFile: "https://edge.fscdn.org/assets/inject_relay_0.4.0a.20130130.html",
-        relaySwf: "https://edge.fscdn.org/assets/inject_relay_0.4.0a.20130130.swf"
-      });
-    
-    Inject.setExpires(2 * 24 * 60);//keep for max of 2 days in minutes
-
-  
-
-  
-  if(window.manifest) {
-    if(window.debugOn) {
-      console.log("Need to change manifest over to debug versions");
-      for(var k in manifest.js){
-        manifest.js[k] = manifest.js[k].replace(".js", "_raw.js");
-      }
-    }
-    Inject.manifest(manifest.js);
-  }
-  console.log("Controls have been configured");
-
-  $(document).ready(function() {
-    FS.Controls.init(document.body);
-  });
-</script>
-    <script src='https://edge.fscdn.org/assets/js/bootstrap-09c81293918e1c72e759b94586827d64.js'></script>
-    <script src='https://edge.fscdn.org/assets/js/prettify-min-d435ff18c832044c3ddf7a0cf826eb72.js'></script>
-    <script type="text/javascript">
-      $(function(){ prettyPrint(); });
-    </script>
-<!--script src='https://edge.fscdn.org/assets/js/SandboxAuth-118f268dda2c90286e62560beae2b1dd.js'></script-->
-<script type="text/javascript">
-(function() {
-    function getParameterByName(name) {
-        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(location.search);
-        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
-
-    function setCookie(cname, cvalue, exseconds) {
-        var d = new Date();
-        d.setTime(d.getTime() + (exseconds*1000));
-        var expires = "expires="+d.toUTCString();
-        document.cookie = cname + "=" + cvalue + "; " + expires;
-    }
-
-    function getCookie(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0; i<ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1);
-            if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
-        }
-        return "";
-    }
-
-    function deleteCookie(cname) {
-        var d = new Date();
-        d.setTime(d.getTime() - 1000);
-        var expires = "expires="+d.toUTCString();
-        document.cookie = cname + "=; " + expires;
-    }
-
-    var access_token = ''
-    console.log('------')
-    console.log(getParameterByName('code'))
-    $.ajax({url: 'https://sandbox.familysearch.org/cis-web/oauth2/v3/token',
-            type: 'post',
-            data: {grant_type: 'authorization_code',
-                   code: getParameterByName('code'),
-                   client_id: 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'},
-                   contentType: 'application/x-www-form-urlencoded; application/json',
-            success: function(result) {
-                access_token = result.access_token
-                console.log(result)
-                $.ajax({url: 'https://sandbox.familysearch.org/platform/users/current.json',
-                        data: {access_token: access_token},
-                        type: 'get',
-                        success: function(current) {
-                            console.log('here')
-                            console.log(current.users[0].personId)
-                            person_id = current.users[0].personId
-                            console.log(access_token)
-                            console.log('that was it')
-                            $.ajax({url: 'https://sandbox.familysearch.org/platform/tree/ancestry.json',
-                                    data: {access_token: access_token, person: person_id},
+                var access_token = ''
+                console.log('------')
+                console.log(getParameterByName('code'))
+                $.ajax({url: 'https://sandbox.familysearch.org/cis-web/oauth2/v3/token',
+                        type: 'post',
+                        data: {grant_type: 'authorization_code',
+                            code: getParameterByName('code'),
+                            client_id: 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'},
+                            contentType: 'application/x-www-form-urlencoded; application/json',
+                        success: function(result) {
+                            access_token = result.access_token
+                            console.log(result)
+                            $.ajax({url: 'https://sandbox.familysearch.org/platform/users/current.json',
+                                    data: {access_token: access_token},
                                     type: 'get',
-                                    success: function(ancestry) {
+                                    success: function(current) {
                                         console.log('here')
-                                        console.log(ancestry)
-                                        persons = ancestry.persons
-                                        for (i in persons) {
-                                            $.ajax({url: 'https://sandbox.familysearch.org/platform/memories/memories/' + persons[i].id + '.json',
-                                                    data: {access_token: access_token},
-                                                    type: 'get',
-                                                    success: function(memories) {
-                                                        console.log(memories)
+                                        console.log(current.users[0].personId)
+                                        person_id = current.users[0].personId
+                                        console.log(access_token)
+                                        console.log('that was it')
+                                        $.ajax({url: 'https://sandbox.familysearch.org/platform/tree/ancestry.json',
+                                                data: {access_token: access_token, person: person_id},
+                                                type: 'get',
+                                                success: function(ancestry) {
+                                                    console.log('here')
+                                                    console.log(ancestry)
+                                                    persons = ancestry.persons
+                                                    for (i in persons) {
+                                                        $.ajax({url: 'https://sandbox.familysearch.org/platform/memories/memories/' + persons[i].id + '.json',
+                                                                data: {access_token: access_token},
+                                                                type: 'get',
+                                                                success: function(memories) {
+                                                                    console.log(memories)
+                                                                }
+                                                        })
                                                     }
-                                            })
-                                        }
+                                                }
+                                        })
                                     }
                             })
                         }
-                })
-            }
-    });
+                });
 
-    function g(a) {
-        e = a, d = !0;
-        for (var b in c) c[b](a)
-    }
-    var a = "WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK",
-        b = "fsdc-access-token",
-        c = [],
-        d = !1,
-        e;
-    $.extend(typeof FS == "object" ? FS : window.FS = {}, {
-        Sandbox: {
-            login: function() {
-                var b = 'http://scoutcharter-21273.usw1.actionbox.io:3000/select-person';
-                //window.location.href.indexOf("https://familysearch.org/developers") == 0 ? b = "https://familysearch.org/developers/sandbox-oauth2-redirect" : b = window.location.protocol + "//" + window.location.host + "/sandbox-oauth2-redirect";
-                var c = window.location.pathname,
-                    d = "https://sandbox.familysearch.org/cis-web/oauth2/v3/authorization",
-                    e = "?response_type=code&client_id=" + a + "&redirect_uri=" + b + "&state=" + c;
-                window.location.href = d + e
-            },
-            logout: function(a) {
-                deleteCookie(b), a && (window.location.href = window.location.pathname)
-            },
-            getAccessToken: function() {
-                return getCookie(b)
-            },
-            isLoggedIn: function(a) {
-                d ? a(e) : c.push(a)
-            }
-        }
-    });
-    var f = FS.Sandbox.getAccessToken();
-    f ? $.get("https://sandbox.familysearch.org/platform/users/current?access_token=" + f).done(function() {
-        g(!0)
-    }).fail(function() {
-        g(!1)
-    }) : g(!1)
-})()
-</script>
-
-
-
-        <script src='https://edge.fscdn.org/assets/js/jquery.rest-6fdc0ba4a4c53daae26710260f10847c.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/sample-common-b8a673a9fb41eb4acaa9b110251239ca.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/sample-app-2aa4c99d292808f8b19c46207fb8f78e.js'></script>
-      
+                function g(a) {
+                    e = a, d = !0;
+                    for (var b in c) c[b](a)
+                }
+                var a = "WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK",
+                    b = "fsdc-access-token",
+                    c = [],
+                    d = !1,
+                    e;
+                $.extend(typeof FS == "object" ? FS : window.FS = {}, {
+                    Sandbox: {
+                        login: function() {
+                            var b = 'http://scoutcharter-21273.usw1.actionbox.io:3000/select-person';
+                            //window.location.href.indexOf("https://familysearch.org/developers") == 0 ? b = "https://familysearch.org/developers/sandbox-oauth2-redirect" : b = window.location.protocol + "//" + window.location.host + "/sandbox-oauth2-redirect";
+                            var c = window.location.pathname,
+                                d = "https://sandbox.familysearch.org/cis-web/oauth2/v3/authorization",
+                                e = "?response_type=code&client_id=" + a + "&redirect_uri=" + b + "&state=" + c;
+                            window.location.href = d + e
+                        },
+                        logout: function(a) {
+                            deleteCookie(b), a && (window.location.href = window.location.pathname)
+                        },
+                        getAccessToken: function() {
+                            return getCookie(b)
+                        },
+                        isLoggedIn: function(a) {
+                            d ? a(e) : c.push(a)
+                        }
+                    }
+                });
+                var f = FS.Sandbox.getAccessToken();
+                f ? $.get("https://sandbox.familysearch.org/platform/users/current?access_token=" + f).done(function() {
+                    g(!0)
+                }).fail(function() {
+                    g(!1)
+                }) : g(!1)
+            })()
+        </script>
+        <!-- I believe this script defines FS -->
         <script src='https://edge.fscdn.org/assets/js/sample-app/authenticate-761e304b3d703b427c039845e76f7881.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/conclusions-a6eb514051407173548c9d62ce0fed15.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/couple-relationship-a5d0272748b70375e28465a3eb31441e.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/match-3ff3192e1bca8193d269b5bd895a0ff9.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/parent-child-create-60262fcb2d3018c53d549621f5f3cd4d.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/person-create-30db9c9c1ffb0627b7e8147bac4ec41c.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/person-discussions-75b1e074b938cb1cd0ab1a60914286d7.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/person-merge-39f397b5e7b0ef3626c3754d3ddf7c95.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/person-read-c7cae985184b2d445b5ca0e95e7aa845.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/search-068bde80ea924c1ef7885ef9a6ec864f.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/sources-6636158e0113509b13f39b62a0769909.js'></script>
-      
-        <script src='https://edge.fscdn.org/assets/js/sample-app/user-9de2728a202d7313e96ae33c84c13aa1.js'></script>
-      
-    
-
-    
-
-
-
-<script type="text/javascript"><!--
-s.pageName = "FamilySearch: Developers: sample-app";
-s.channel = "FamilySearch: Developers:";
-s.prop35 = s.eVar35 = "en-US"; 
-
-s.prop36 = ""; // Any search term
-var s_code=s.t();if(s_code) document.write(s_code)//--></script>
-
-
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-26436202-2']);
-  _gaq.push(['_setDomainName', '.familysearch.org']); 
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-
-</body>
+    </body>
 </html>
+
 
