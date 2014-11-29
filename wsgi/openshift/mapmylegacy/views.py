@@ -45,7 +45,13 @@ def timeline(request):
 
     return render(request, 'home/timeline.html', locals())
 
-def pedigree_match(request):
+def pedigree_match(request, person_id=None):
+    fs_access_token = service.get_access_token(request)
+
+    if not fs_access_token:
+        return redirect('/')
+
+    photos = service.get_ancestry_photos(fs_access_token, person_id)
 
     return render(request, 'home/pedigree-match.html', locals())
 

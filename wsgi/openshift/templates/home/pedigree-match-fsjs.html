@@ -2,11 +2,10 @@
 <html lang="en"> 
     <head> 
         <meta charset="UTF-8" />
-        <title>Phaser - Making your first game, part 1</title>
+        <title>Pedigree Match</title>
     </head>
     <body>
         <button id="authenticate-btn" class="btn btn-primary">Authenticate</button>
-        <a href="javascript:personReadId('KWQ7-Y57');">KWQ7-Y57</a>
 
         <script src='https://edge.fscdn.org/assets/js/jquery-1.8.2.min-cfa9051cc0b05eb519f1e16b2a6645d7.js'></script>
         <script src='https://edge.fscdn.org/assets/js/familysearch-s_code-19679656fa65786a5730ff00a58d5d84.js'></script>
@@ -45,15 +44,15 @@
                 }
 
                 var access_token = ''
-                console.log('------')
-                console.log(getParameterByName('code'))
+                var auth_code = getParameterByName('code');
                 $.ajax({url: 'https://sandbox.familysearch.org/cis-web/oauth2/v3/token',
                         type: 'post',
                         data: {grant_type: 'authorization_code',
-                            code: getParameterByName('code'),
+                            code: auth_code,
                             client_id: 'WCQY-7J1Q-GKVV-7DNM-SQ5M-9Q5H-JX3H-CMJK'},
-                            contentType: 'application/x-www-form-urlencoded; application/json',
+                        contentType: 'application/x-www-form-urlencoded; application/json',
                         success: function(result) {
+                            $('#authenticate-btn').html('Log out');
                             access_token = result.access_token
                             console.log(result)
                             $.ajax({url: 'https://sandbox.familysearch.org/platform/users/current.json',
@@ -74,6 +73,9 @@
                                                     persons = ancestry.persons
                                                     for (i in persons) {
                                                         $.ajax({url: 'https://sandbox.familysearch.org/platform/memories/memories/' + persons[i].id + '.json',
+                                                                beforeSend: function (xhr) {
+                                                                    xhr.setRequestHeader ("Authorization", "Basic " + access_token);
+                                                                },
                                                                 data: {access_token: access_token},
                                                                 type: 'get',
                                                                 success: function(memories) {

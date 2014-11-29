@@ -1,6 +1,8 @@
 from openshift import settings
 import json
+import logging
 import requests
+import shutil
 
 FS_CLIENT_ID = settings.FS_CLIENT_ID
 FS_AUTH_NETLOC = settings.FS_AUTH_NETLOC
@@ -107,3 +109,39 @@ def get_ancestry_data(fs_access_token, person_id):
     ancestry_json = r_ancestry.text
 
     return ancestry_json 
+
+def get_ancestry_photos(fs_access_token, person_id):
+    fs_auth_headers = {'Authorization': 'Bearer %s' % fs_access_token}
+
+    # Get ancestry data
+    ancestry_json = get_ancestry_data(fs_access_token, person_id)
+    ancestry = json.loads(ancestry_json)
+    ancestor_list = []
+
+    for ancestor in ancestry['persons']:
+        person_id = ancestor['id']
+        filename = '%s.jpg' % person_id
+        name = ancestor['display']['name']
+        relation = ancestor['display']['ascendancyNumber']
+        ancestor_list.append({'person_id': person_id,
+                              'filename': filename,
+                              'name': name,
+                              'relation': relation})
+
+    portraits_json = json.dumps(ancestor_list)
+    
+    # Retrieve portrait photos and save them to the static directory for use in
+    # the game
+    for ancestor in ancestor_list:
+        fs_portrait_path = '/platform/tree/persons/%s/portrait' % ancestor['person_id']
+        fs_portrait_url = '%s%s' % (FS_NETLOC, fs_portrait_path)
+        fs_params = {'default': 'http://cdn.flaticon.com/png/256/36601.png'}
+        r_portrait = requests.get(fs_portrait_url, params=fs_params, headers=fs_auth_headers, stream=True)
+        portrait_path = 'static/img/%s' % ancestor['filename']
+
+        if r_portrait.status_code == 200:
+            with open(portrait_path, 'wb') as f:
+                r_portrait.raw.decode_content = True
+                shutil.copyfileobj(r_portrait.raw, f)       
+
+    return portraits_json
