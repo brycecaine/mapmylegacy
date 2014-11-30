@@ -17,6 +17,14 @@
                     }
                 });
                 */
+                var rel_coords = {    4: {x: 112, y: -46},
+                                    2: {x: 336, y: 50},
+                                      5: {x: 560, y: -46},
+                                  1: {x: 784, y: 146},
+                                      6: {x: 1008, y: -46},
+                                    3: {x: 1232, y: 50},
+                                      7: {x: 1456, y: -46}
+                             }
                 var people = {{ photos|safe }};
                 console.log(people);
                 /*
@@ -43,18 +51,8 @@
                         this._super(p, { sheet: "player", x: 410, y: -100, speed: 400, jumpSpeed: -500 });
                         this.add('2d, platformerControls');
                         
+                        /*
                         this.on("hit.sprite",function(collision) {
-                            if(collision.obj.isA("Spot")) {
-                                console.log(collision.obj);
-                                console.log(collision.obj.p.asset);
-                                console.log(this.p.asset);
-                                if (collision.obj.p.person_id == 'KWWY-2Q3') {
-                                    console.log('replace')
-                                    collision.obj.p.asset = 'b.png';
-                                    this.p.sheet = 'player';
-                                    this.p.asset = '';
-                                }
-                            }
                             if(collision.obj.isA("Picture")) {
                                 this.p.sheet = '';
                                 this.p.asset = 'the.jpg';
@@ -62,25 +60,43 @@
                                 collision.obj.destroy();
                             }
                         });
+                        */
                     }
                 });
 
-                Q.Sprite.extend("Spot", {
+                Q.UI.Container.extend("Spot", {
                     init: function(p) {
                         this._super(p, {
+                            sort: true,
                             person_id: 1,
                             asset: 'spot.png'
                         });
-                        this.add('2d, aiBounce');
+                        //this.add('2d, aiBounce');
                     }
                 });
 
                 Q.Sprite.extend("Picture", {
                     init: function(p) {
                         this._super(p, {
-                            asset: 'the.jpg'
+                            person_id: 1,
+                            asset: 'c.png'
                         });
                         this.add('2d, aiBounce');
+                        this.on('bump.top', function(collision) {
+                            console.log('bump');
+                            if(collision.obj.isA('Player')) {
+                                console.log('from player');
+                                if (this.p.person_id == 'KWWY-2Q3') {
+                                    console.log('matching person');
+                                    console.log('wrap');
+                                    collision.obj.p.vy = -300;
+                                    // collision.obj.p.sheet = 'b.png';
+                                    console.log(this.p);
+                                    console.log(collision.obj.p);
+                                    this.p.opacity = 1;
+                                }
+                            }
+                        });
                     }
                 });
 
@@ -97,31 +113,53 @@
                     var player = stage.insert(new Q.Player());
                     stage.add("viewport").follow(player);
                     
-                    stage.insert(new Q.Enemy({ x: 700, y: 400 }));
-                    stage.insert(new Q.Enemy({ x: 800, y: 400 }));
+                    stage.insert(new Q.Enemy({ x: 700, y: 0 }));
+                    stage.insert(new Q.Enemy({ x: 800, y: 0 }));
 
                     for (i=0; i<people.length; i++) {
-                        // 740 = middle
-                        var x = 224 * i + 112;
                         var spot = stage.insert(new Q.Spot({
-                            x: x,
-                            y: 0,
+                            fill: "gray",
+                            stroke: '#5a5a5a',
+                            border: 0,
+                            sort: true,
+                            x: rel_coords[people[i].relation]['x'],
+                            y: rel_coords[people[i].relation]['y'],
+                            z: 2,
                             person_id: people[i].person_id
                         }));
-                        stage.insert(new Q.UI.Text({ 
+
+                        /*
+                        var spot = stage.insert(new Q.UI.Container({
+                            fill: "gray",
+                            border: 5,
+                            shadow: 10,
+                            shadowColor: "rgba(0,0,0,0.5)",
+                            x: x_spot,
+                            y: 0
+                        }));
+                        */
+
+                        var label = stage.insert(new Q.UI.Text({ 
                             label: people[i].name,
                             color: "black",
+                            sort: true,
                             x: 0,
-                            y: 65
+                            y: 65,
+                            z: 2,
+                        }), spot);
+
+                        var picture = stage.insert(new Q.Picture({
+                            opacity: .22,
+                            sort: true,
+                            x: 0,
+                            y: 0,
+                            z: 1,
+                            person_id: people[i].person_id
                         }), spot);
                     }
-
-
-
-
                 });
 
-                var load_string = 'sprites.png, sprites.json, level.json, tiles.png, spot.png';
+                var load_string = 'sprites.png, sprites.json, level.json, tiles.png, spot.png, c.png';
                 for (i=0; i<people.length; i++) {
                     load_string += ', ' + people[i].filename;
                 };
