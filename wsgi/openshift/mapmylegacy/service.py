@@ -1,6 +1,8 @@
 from openshift import settings
+from PIL import Image
 import json
 import logging
+import os
 import requests
 import shutil
 
@@ -12,6 +14,8 @@ FS_TOKEN_PARAMS = settings.FS_TOKEN_PARAMS
 
 FS_NETLOC = settings.FS_NETLOC
 FS_PERSON_PATH = settings.FS_PERSON_PATH 
+
+IMG_SIZE = 96, 96
 
 def get_access_token(request):
     # Get access token if it exists in the session variables
@@ -143,5 +147,23 @@ def get_ancestry_photos(fs_access_token, person_id):
             with open(portrait_path, 'wb') as f:
                 r_portrait.raw.decode_content = True
                 shutil.copyfileobj(r_portrait.raw, f)       
+
+    ped_filenames = [ped_filename['filename'] for ped_filename in ancestor_list]
+    for filename in os.listdir('/home/action/workspace/mapmylegacy/wsgi/openshift/static/img'):
+        if filename in ped_filenames:
+            print 1
+            outfile = '/home/action/workspace/mapmylegacy/wsgi/openshift/static/img/%s' % filename
+            print 2
+            try:
+                print 3
+                im = Image.open('/home/action/workspace/mapmylegacy/wsgi/openshift/static/img/%s' % filename)
+                print 4
+                im.thumbnail(IMG_SIZE, Image.ANTIALIAS)
+                print 5
+                im.save(outfile, 'JPEG')
+                print 6
+            except IOError:
+                print "Cannot create thumbnail for '%s'" % filename
+                shutil.copy('/home/action/workspace/mapmylegacy/wsgi/openshift/static/img/placeholder.jpg', '/home/action/workspace/mapmylegacy/wsgi/openshift/static/img/%s' % filename)
 
     return portraits_json

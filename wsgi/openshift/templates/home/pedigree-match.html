@@ -7,16 +7,6 @@
     <body>
         <script>
             $(function() {
-                /*
-                $.ajax({
-                    url: '...',
-                    type: 'get',
-                    success: function(portraits_json) {
-                        console.log('wwwwwwwwwwwww');
-                        console.log(portraits_json);
-                    }
-                });
-                */
                 var rel_coords = {    4: {x: 112, y: -46},
                                     2: {x: 336, y: 50},
                                       5: {x: 560, y: -46},
@@ -26,17 +16,6 @@
                                       7: {x: 1456, y: -46}
                              }
                 var people = {{ photos|safe }};
-                console.log(people);
-                /*
-                var people = [{'filename': 'the.jpg', 'relation': 'P'  , 'name': 'Rulon Mareton'},
-                            {'filename': 'b.png', 'relation': 'F'  , 'name': 'Talon Mareton'},
-                            {'filename': 'c.png', 'relation': 'M'  , 'name': 'Hattie Bridges'},
-                            {'filename': 'd.png', 'relation': 'FF' , 'name': 'Paren Mareton'},
-                            {'filename': 'e.png', 'relation': 'FM' , 'name': 'Gertrude Polimon'},
-                            {'filename': 'f.png', 'relation': 'MF' , 'name': 'Aleck Bridges'},
-                            {'filename': 'g.png', 'relation': 'MM' , 'name': 'Raquel Kripps'}
-                            ];
-                */
 
                 var Q = Quintus({development: true,
                                 imagePath: '/static/img/',
@@ -50,17 +29,6 @@
                     init: function(p) {
                         this._super(p, { sheet: "player", x: 410, y: -100, speed: 400, jumpSpeed: -500 });
                         this.add('2d, platformerControls');
-                        
-                        /*
-                        this.on("hit.sprite",function(collision) {
-                            if(collision.obj.isA("Picture")) {
-                                this.p.sheet = '';
-                                this.p.asset = 'the.jpg';
-                                this.size(true);
-                                collision.obj.destroy();
-                            }
-                        });
-                        */
                     }
                 });
 
@@ -69,9 +37,8 @@
                         this._super(p, {
                             sort: true,
                             person_id: 1,
-                            asset: 'spot.png'
+                            asset: 'c.png'
                         });
-                        //this.add('2d, aiBounce');
                     }
                 });
 
@@ -83,16 +50,9 @@
                         });
                         this.add('2d, aiBounce');
                         this.on('bump.top', function(collision) {
-                            console.log('bump');
                             if(collision.obj.isA('Player')) {
-                                console.log('from player');
                                 if (this.p.person_id == 'KWWY-2Q3') {
-                                    console.log('matching person');
-                                    console.log('wrap');
                                     collision.obj.p.vy = -300;
-                                    // collision.obj.p.sheet = 'b.png';
-                                    console.log(this.p);
-                                    console.log(collision.obj.p);
                                     this.p.opacity = 1;
                                 }
                             }
@@ -121,45 +81,29 @@
                             fill: "gray",
                             stroke: '#5a5a5a',
                             border: 0,
-                            sort: true,
                             x: rel_coords[people[i].relation]['x'],
                             y: rel_coords[people[i].relation]['y'],
-                            z: 2,
                             person_id: people[i].person_id
                         }));
-
-                        /*
-                        var spot = stage.insert(new Q.UI.Container({
-                            fill: "gray",
-                            border: 5,
-                            shadow: 10,
-                            shadowColor: "rgba(0,0,0,0.5)",
-                            x: x_spot,
-                            y: 0
-                        }));
-                        */
 
                         var label = stage.insert(new Q.UI.Text({ 
                             label: people[i].name,
                             color: "black",
-                            sort: true,
                             x: 0,
                             y: 65,
-                            z: 2,
                         }), spot);
 
                         var picture = stage.insert(new Q.Picture({
+                            asset: people[i].filename,
                             opacity: .22,
-                            sort: true,
                             x: 0,
                             y: 0,
-                            z: 1,
                             person_id: people[i].person_id
                         }), spot);
                     }
                 });
 
-                var load_string = 'sprites.png, sprites.json, level.json, tiles.png, spot.png, c.png';
+                var load_string = 'sprites.png, sprites.json, level.json, tiles.png, c.png';
                 for (i=0; i<people.length; i++) {
                     load_string += ', ' + people[i].filename;
                 };
