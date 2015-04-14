@@ -136,21 +136,21 @@ def get_ancestry_photos(fs_access_token, person_id):
     
     # Retrieve portrait photos and save them to the static directory for use in
     # the game
+    img_dir = os.listdir('/home/action/workspace/mapmylegacy/wsgi/openshift/static/img')
     for ancestor in ancestor_list:
-        fs_portrait_path = '/platform/tree/persons/%s/portrait' % ancestor['person_id']
-        fs_portrait_url = '%s%s' % (FS_NETLOC, fs_portrait_path)
-        fs_params = {'default': 'http://cdn.flaticon.com/png/256/36601.png'}
-        r_portrait = requests.get(fs_portrait_url, params=fs_params, headers=fs_auth_headers, stream=True)
-        portrait_path = 'static/img/%s' % ancestor['filename']
+        filename = ancestor['filename']
+        if filename not in img_dir: 
+            fs_portrait_path = '/platform/tree/persons/%s/portrait' % ancestor['person_id']
+            fs_portrait_url = '%s%s' % (FS_NETLOC, fs_portrait_path)
+            fs_params = {'default': 'http://cdn.flaticon.com/png/256/36601.png'}
+            r_portrait = requests.get(fs_portrait_url, params=fs_params, headers=fs_auth_headers, stream=True)
+            portrait_path = 'static/img/%s' % filename
 
-        if r_portrait.status_code == 200:
-            with open(portrait_path, 'wb') as f:
-                r_portrait.raw.decode_content = True
-                shutil.copyfileobj(r_portrait.raw, f)       
+            if r_portrait.status_code == 200:
+                with open(portrait_path, 'wb') as f:
+                    r_portrait.raw.decode_content = True
+                    shutil.copyfileobj(r_portrait.raw, f)       
 
-    ped_filenames = [ped_filename['filename'] for ped_filename in ancestor_list]
-    for filename in os.listdir('/home/action/workspace/mapmylegacy/wsgi/openshift/static/img'):
-        if filename in ped_filenames:
             print 1
             outfile = '/home/action/workspace/mapmylegacy/wsgi/openshift/static/img/%s' % filename
             print 2

@@ -7,6 +7,22 @@
     <body>
         <script>
             $(function() {
+                // ------------------------------------------------------------
+                // Service
+                function shuffle(array) {
+                    console.log('here');
+                    for (var i = array.length - 1; i > 0; i--) {
+                        console.log('there');
+                        var j = Math.floor(Math.random() * (i + 1));
+                        var temp = array[i];
+                        array[i] = array[j];
+                        array[j] = temp;
+                    }
+                    return array;
+                }
+
+                // ------------------------------------------------------------
+                // Globals
                 var rel_coords = {    4: {x: 112, y: -46},
                                     2: {x: 336, y: 50},
                                       5: {x: 560, y: -46},
@@ -14,9 +30,19 @@
                                       6: {x: 1008, y: -46},
                                     3: {x: 1232, y: 50},
                                       7: {x: 1456, y: -46}
-                             }
+                                 }
+
+                var sel_xs = new Array();
+                for (i = 0; i < 7; i++) {
+                    sel_xs[i] = 400 + 128 * i;
+                }
+                var sel_xs_shuff = shuffle[sel_xs];
+                console.log(sel_xs_shuff);
+
                 var people = {{ photos|safe }};
 
+                // ------------------------------------------------------------
+                // Game Setup
                 var Q = Quintus({development: true,
                                 imagePath: '/static/img/',
                                 audioPath: '/static/audio/',
@@ -25,6 +51,29 @@
                         .setup({ maximize: true })
                         .controls().touch()
                     
+                // ------------------------------------------------------------
+                // Game State
+                Q.UI.Text.extend("Score",{ 
+                    init: function(p) {
+                        this._super({
+                            label: "score: 0",
+                            x: 0,
+                            y: 0
+                        });
+
+                        Q.state.on("change.score",this,"score");
+                    },
+
+                    score: function(score) {
+                        console.log(score);
+                        this.p.label = "score: " + score;
+                    }
+                });
+
+                Q.state.set('score', 0);
+
+                // ------------------------------------------------------------
+                // Game Components
                 Q.Sprite.extend("Player",{
                     init: function(p) {
                         this._super(p, { sheet: "player", x: 410, y: -100, speed: 400, jumpSpeed: -500 });
@@ -51,9 +100,10 @@
                         this.add('2d, aiBounce');
                         this.on('bump.top', function(collision) {
                             if(collision.obj.isA('Player')) {
-                                if (this.p.person_id == 'KWWY-2Q3') {
+                                if (this.p.person_id == 'KWWY-235') {
                                     collision.obj.p.vy = -300;
                                     this.p.opacity = 1;
+                                    Q.state.inc('score', 5);
                                 }
                             }
                         });
@@ -62,13 +112,20 @@
 
                 Q.Sprite.extend("Enemy",{
                     init: function(p) {
-                        this._super(p, { sheet: 'enemy', vx: 100 });
+                        this._super(p, { sheet: 'enemy', vx: 400 });
                         this.add('2d, aiBounce');
+                        this.on('bump.left,bump.right', function(collision) {
+                            this.p.vy = -400;
+                        });
                     }
                 });
 
+                // ------------------------------------------------------------
+                // Scene Creation
                 Q.scene("level1",function(stage) {
                     stage.collisionLayer(new Q.TileLayer({ dataAsset: 'level.json', sheet: 'tiles' }));
+
+                    stage.insert(new Q.Score({ x: 700, y: 0 }));
 
                     var player = stage.insert(new Q.Player());
                     stage.add("viewport").follow(player);
@@ -76,6 +133,7 @@
                     stage.insert(new Q.Enemy({ x: 700, y: 0 }));
                     stage.insert(new Q.Enemy({ x: 800, y: 0 }));
 
+                    // Insert the picture spots
                     for (i=0; i<people.length; i++) {
                         var spot = stage.insert(new Q.Spot({
                             fill: "gray",
@@ -86,6 +144,7 @@
                             person_id: people[i].person_id
                         }));
 
+                        // Attach labels to the spots
                         var label = stage.insert(new Q.UI.Text({ 
                             label: people[i].name,
                             color: "black",
@@ -93,6 +152,7 @@
                             y: 65,
                         }), spot);
 
+                        // Insert the pictures behind the spots
                         var picture = stage.insert(new Q.Picture({
                             asset: people[i].filename,
                             opacity: .22,
@@ -100,6 +160,15 @@
                             y: 0,
                             person_id: people[i].person_id
                         }), spot);
+
+                        // Insert the pictures for selecting
+                        var picture = stage.insert(new Q.Picture({
+                            asset: people[i].filename,
+                            opacity: .25,
+                            x: sel_xs[i],
+                            y: 360,
+                            person_id: people[i].person_id
+                        }));
                     }
                 });
 
